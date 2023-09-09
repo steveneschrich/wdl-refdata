@@ -1,0 +1,3 @@
+[submodule "biowdl_tasks"]
+	path = biowdl_tasks
+	url = https://github.com/steveneschrich/biowdl_tasks
