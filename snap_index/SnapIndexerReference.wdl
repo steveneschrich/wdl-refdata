@@ -1,6 +1,6 @@
 version 1.0
 
-import "../../biowdl_tasks/snap_aligner.wdl" as snap_aligner
+import "../biowdl_tasks/snap_aligner.wdl" as snap_aligner
 import "../tasks/squashfs.wdl" as squashfs
 import "../tasks/download.wdl" as download
 
