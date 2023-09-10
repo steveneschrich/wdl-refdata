@@ -1,9 +1,9 @@
 version 1.0
 
-task download_ncbi_reference {
+task DownloadNcbiReference {
     input {
         String url
-        String output_file = basename(url)
+        String outputFile = basename(url)
         Int cpu = 8
         String memory = "16G"
         String dockerImage = "alpine:latest"
@@ -13,11 +13,11 @@ task download_ncbi_reference {
         wget -q -O - \
             ~{url} | \
             gunzip -c | \
-            gzip -c > ~{output_file}
+            gzip -c > ~{outputFile}
     >>>
 
     output {
-        File reference_fa = "~{output_file}"
+        File referenceFasta = "~{outputFile}"
     }
     runtime {
         docker: dockerImage

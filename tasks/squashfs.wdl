@@ -1,10 +1,10 @@
 version 1.0
 
-task create_squashfs {
+task CreateSquashfs {
 
     input {
-        File f
-        String fs = "fs.squashfs"
+        File source
+        String filesystem = "fs.squashfs"
 
         String dockerImage = "dockerhub.moffitt.org/hpc/squashfs-tools:4.5"
         Int cpu = 8
@@ -13,28 +13,28 @@ task create_squashfs {
 
     command <<<
 
-        if [ ! -z "`echo ~{f} | grep '.tar.gz$'`" ]; then
-            echo "tar file detected: ~{f}."
+        if [ ! -z "`echo ~{source} | grep '.tar.gz$'`" ]; then
+            echo "tar file detected: ~{source}."
             echo "Extracting tar file to image"
-            zcat ~{f} | \
-                mksquashfs - ~{fs} \
+            zcat ~{source} | \
+                mksquashfs - ~{filesystem} \
                     -keep-as-directory \
                     -no-strip \
                     -tar \
                     -processors ~{cpu} \
                     -mem ~{memory}
-        elif [ ! -z "`echo ~{f} | grep '.tar$'`" ]; then
-            echo "tar file detected: ~{f}."
+        elif [ ! -z "`echo ~{source} | grep '.tar$'`" ]; then
+            echo "tar file detected: ~{source}."
             echo "Extracting tar file to image"
-            cat ~{f} | \
-                mksquashfs - ~{fs} \
+            cat ~{source} | \
+                mksquashfs - ~{filesystem} \
                     -keep-as-directory \
                     -no-strip \
                     -tar \
                     -processors ~{cpu} \
                     -mem ~{memory}
         else
-            mksquashfs ~{f} ~{fs} \
+            mksquashfs ~{source} ~{filesystem} \
                 -keep-as-directory \
                 -processors ~{cpu} \
                 -mem ~{memory}
@@ -43,7 +43,7 @@ task create_squashfs {
     >>>
 
     output {
-        File filesystem = "~{fs}"
+        File filesystem = "~{filesystem}"
     }
     runtime {
         docker: dockerImage

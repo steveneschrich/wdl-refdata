@@ -1,41 +1,41 @@
 version 1.0
 
-import "../biowdl_tasks/snap_aligner.wdl" as snap_aligner
+import "../biowdl_tasks/snap_aligner.wdl" as snapAligner
 import "../tasks/squashfs.wdl" as squashfs
 import "../tasks/download.wdl" as download
 
 workflow SnapIndexerReference {
     input {
-        String reference_fa
+        String referenceFasta
     }
 
     # Download reference fa file from web
-    call download.download_ncbi_reference as dl {
+    call download.DownloadNcbiReference as dl {
         input:
-            url = reference_fa
+            url = referenceFasta
     }
 
     # snap aligner has indexer option
-    call snap_aligner.snap_indexer as snap_indexer {
+    call snapAligner.SnapIndexer as snapIndexer {
         input:
-            fa = dl.reference_fa
+            inputFasta = dl.referenceFasta
     }
 
     # Create two reference filesystems: reference_fa and snap_index
-    call squashfs.create_squashfs as squash_fa {
+    call squashfs.CreateSquashfs as squashFasta {
         input:
-            f = dl.reference_fa,
-            fs = basename(reference_fa, ".gz") + ".squashfs"
+            source = dl.referenceFasta,
+            filesystem = basename(referenceFasta, ".gz") + ".squashfs"
     }
-    call squashfs.create_squashfs as squash_snap_index {
+    call squashfs.CreateSquashfs as squashSnapIndex {
         input:
-            f = snap_indexer.snap_index,
-            fs = basename(reference_fa, ".fa.gz") + "_snap.squashfs"
+            source = snapIndexer.snapIndex,
+            filesystem = basename(referenceFasta, ".fa.gz") + "_snap.squashfs"
     }
 
-    output {
-        File fs_fa = squash_fa.filesystem
-        File fs_snap = squash_snap_index.filesystem
+    output {    
+        File filesystemFasta = squashFasta.filesystem
+        File filesystemSnap = squashSnapIndex.filesystem
     }
 
 
